@@ -1,0 +1,19 @@
+<powershell>
+New-NetFirewallRule -DisplayName "PSRemoting" -Description "Allow Power Shell Remoting from public Network"-Name PSRemotingAllow -Direction Inbound -Protocol TCP -LocalPort 5985 -Profile "Any";
+[ADSI]$admin="WinNT://$env:COMPUTERNAME/Administrator";
+$admin.SetPassword("dont@skme4");
+mkdir c:\datadog;
+wget https://s3.amazonaws.com/ddagent-windows-stable/ddagent-cli.msi -OutFile c:\datadog\ddagent-cli.msi;
+net start msiserver;
+msiexec /qn /i c:\datadog\ddagent-cli.msi /Lime c:\datadog\log.txt APIKEY="adf4dcc3b50277e9866dd59cc2fbee01" HOSTNAME="my_hostname" TAGS="UsrData,TestFinal"
+start-sleep -s 120;
+$service = Get-Service datadogagent -ErrorAction SilentlyContinue;
+if ($service.Length -gt 0) {
+    write-host "service exists";
+    }
+else{
+    start-sleep -s 120;
+    net start msiserver;
+    msiexec /qn /i c:\datadog\ddagent-cli.msi /Lime c:\datadog\log_retry.txt APIKEY="adf4dcc3b50277e9866dd59cc2fbee01" HOSTNAME="my_hostname" TAGS="UsrData,TestFinal";
+    }
+</powershell>
