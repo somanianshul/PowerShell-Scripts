@@ -10,10 +10,10 @@ start-sleep -s 120;
 $service = Get-Service datadogagent -ErrorAction SilentlyContinue;
 if ($service.Length -gt 0) {
     write-host "service exists";
-    }
+}
 else{
     start-sleep -s 120;
     net start msiserver;
     msiexec /qn /i c:\datadog\ddagent-cli.msi /Lime c:\datadog\log_retry.txt APIKEY="adf4dcc3b50277e9866dd59cc2fbee01" HOSTNAME="my_hostname" TAGS="UsrData,TestFinal";
-    }
+}
 </powershell>
